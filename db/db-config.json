@@ -1,6 +1,6 @@
 {
   "host": "localhost",
   "port": 5432,
-  "database": "trophy_fish",
+  "database": "fish-nv",
   "user": "mitchellgritts"
 }
