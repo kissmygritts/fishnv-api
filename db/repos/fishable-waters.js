@@ -1,4 +1,5 @@
 const sql = require('../sql').fishableWaters
+const { where, parse, sqlize } = require('../../utils/sqlqs.js')
 
 class FishableWatersRepository {
   constructor(db, pgp) {
@@ -6,8 +7,23 @@ class FishableWatersRepository {
     this.pgp = pgp
   }
 
-  async getAll() {
-    return this.db.manyOrNone(sql.getAll)
+  async getAll(query) {
+    // parse the query string
+    const parsedQuery = parse(query)
+    const speciesIdx = parsedQuery
+      .map(m => m.column)
+      .indexOf('species')
+    
+      if (speciesIdx >= 0) {
+      parsedQuery[speciesIdx].operator = '?'
+    }
+
+    // format where clause
+    const where = parsedQuery.length
+      ? `where ${sqlize(parsedQuery)}`
+      : ''
+
+    return this.db.manyOrNone(sql.getAll, { where })
   }
 
   async getById(id) {
@@ -30,3 +46,7 @@ class FishableWatersRepository {
 }
 
 module.exports = FishableWatersRepository
+
+function objIsEmpty (obj) {
+  return Object.keys(obj).length === 0
+}

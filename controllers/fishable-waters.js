@@ -1,13 +1,10 @@
-const { db, sql, pgp } = require('../db')
+const { db } = require('../db')
+const { parse } = require('../utils/sqlqs.js')
 
-async function getFishableWaters (request, reply) {
-  const { query } = request
-
-  if (hasQueryString(query)) {
-    return db.fishableWaters.search(query)
-  }
-
-  return db.fishableWaters.getAll()
+async function getFishableWaters ({ query }, reply) {
+  // const { query } = request
+  
+  return db.fishableWaters.getAll(query)
 }
 
 async function getFishableWatersById (request, reply) {
